@@ -38,6 +38,7 @@ void* get_argument_by_stack(struct pt_regs *ctx, int index) {
 
 void* get_argument(struct pt_regs *ctx, int index) {
     if (is_registers_abi) {
+        // 读寄存器，index映射到具体寄存器
         return get_argument_by_reg(ctx, index);
     }
 

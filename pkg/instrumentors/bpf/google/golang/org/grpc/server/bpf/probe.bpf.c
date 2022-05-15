@@ -29,11 +29,24 @@ volatile const u64 stream_method_ptr_pos;
 
 // This instrumentation attaches uprobe to the following function:
 // func (s *Server) handleStream(t transport.ServerTransport, stream *transport.Stream, trInfo *traceInfo) {
+// server.handleStream 服务端服务响应函数，根据ServerTransport中带来的server name, method name在最开始注册时记录的map中找到对应的handle func
+// 执行processUnaryRPC(如果是流服务 那么会执行processStreamingRPC)。
+/*
+ * transport.go文件中的ServerTransport interface{}定义了服务端http2结构体的通用方法）
+*/
+
+/*
+HandleStreams vs HandleStream :
+HandleStream被HandleStreams调用
+HandleStreams解析了 ServerTransport中的frame，traceCtx将trace附加到ctx并返回新上下文，调用s.handleStream处理请求(s.handleStream中是真正调用服务响应函数地方)
+*/
+
 SEC("uprobe/server_handleStream")
 int uprobe_server_handleStream(struct pt_regs *ctx) {
     u64 stream_pos = 4;
 
     struct grpc_request_t grpcReq = {};
+    // 获得时间戳
     grpcReq.start_time = bpf_ktime_get_ns();
 
     void* stream_ptr = get_argument(ctx, stream_pos);

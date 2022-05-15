@@ -1,8 +1,6 @@
 package process
 
 import (
-	"github.com/keyval-dev/opentelemetry-go-instrumentation/pkg/errors"
-	"github.com/keyval-dev/opentelemetry-go-instrumentation/pkg/log"
 	"io"
 	"io/ioutil"
 	"os"
@@ -10,6 +8,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/keyval-dev/opentelemetry-go-instrumentation/pkg/errors"
+	"github.com/keyval-dev/opentelemetry-go-instrumentation/pkg/log"
 )
 
 type processAnalyzer struct {
@@ -92,7 +93,6 @@ func (a *processAnalyzer) findProcessID(target *TargetArgs) (int, error) {
 			}
 		}
 	}
-
 	return 0, errors.ErrProcessNotFound
 }
 
